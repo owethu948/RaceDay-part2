@@ -1,7 +1,7 @@
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
 using RaceDay.Api.Auth;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Linq;
 
 namespace RaceDay.Api.Swagger;
 
@@ -11,8 +11,14 @@ namespace RaceDay.Api.Swagger;
 /// </summary>
 public class SessionAuthOperationFilter : IOperationFilter
 {
-    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    public void Apply(Microsoft.OpenApi.OpenApiOperation operation, OperationFilterContext context)
     {
+        // Guard against nulls: context.MethodInfo or operation can be null for some generated operations.
+        if (context?.MethodInfo == null || operation == null)
+        {
+            return;
+        }
+
         var attributes = context.MethodInfo.GetCustomAttributes(true).OfType<SessionAuthorizeAttribute>().ToList();
         if (context.MethodInfo.DeclaringType != null)
         {
@@ -31,8 +37,11 @@ public class SessionAuthOperationFilter : IOperationFilter
                 ? "**Access:** Any logged-in user (Organiser or Participant). Log in first via `POST /api/auth/login`."
                 : $"**Access:** {roles} only. Log in first via `POST /api/auth/login`.";
 
-            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Not logged in (no valid session)." });
-            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Logged in, but your role or ownership does not permit this action." });
+            // Ensure Responses collection is initialized to avoid possible null dereference
+            operation.Responses ??= new Microsoft.OpenApi.OpenApiResponses();
+
+            operation.Responses.TryAdd("401", new Microsoft.OpenApi.OpenApiResponse { Description = "Not logged in (no valid session)." });
+            operation.Responses.TryAdd("403", new Microsoft.OpenApi.OpenApiResponse { Description = "Logged in, but your role or ownership does not permit this action." });
         }
 
         operation.Description = string.IsNullOrWhiteSpace(operation.Description)
