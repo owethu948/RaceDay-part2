@@ -1,4 +1,3 @@
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using RaceDay.Api.Auth;
 using Swashbuckle.AspNetCore.SwaggerGen;
