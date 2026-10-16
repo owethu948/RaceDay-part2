@@ -31,7 +31,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.3.0" />
-    <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
+    <!-- Microsoft.OpenApi comes in transitively via SwaggerGen; do not reference it directly. -->
 
     <!--
       SECURITY FIX: Microsoft.Data.SqlClient (pulled in by EF Core SqlServer) depends on

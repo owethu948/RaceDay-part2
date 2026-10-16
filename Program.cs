@@ -87,7 +87,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler();
 }
 
-app.UseSwagger();
+// Emit Swagger 2.0 (accepted by every Swagger UI build) to rule out a UI/spec version mismatch.
+app.UseSwagger(options => options.OpenApiVersion = OpenApiSpecVersion.OpenApi2_0);
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "RaceDay API v1");
