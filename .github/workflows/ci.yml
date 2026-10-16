@@ -1,0 +1,55 @@
+name: CI
+
+# Builds the API and runs every unit test on every push (any branch) and on pull requests.
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate repository structure
+        run: |
+          missing=0
+          for path in README.md RaceDay-part2.csproj RaceDay-part2.slnx Program.cs \
+                      Controllers Models Data Dtos Services Auth Swagger \
+                      database/RaceDay_Schema_Part2.sql \
+                      RaceDay.Tests/RaceDay.Tests.csproj .github/workflows/ci.yml; do
+            if [ ! -e "$path" ]; then echo "::error::Missing required path: $path"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore RaceDay-part2.slnx
+
+      - name: Build
+        run: dotnet build RaceDay-part2.slnx --no-restore --configuration Release
+
+      - name: Test
+        run: >
+          dotnet test RaceDay-part2.slnx --no-build --configuration Release
+          --logger "trx;LogFileName=test-results.trx"
+          --results-directory TestResults
+
+      - name: Report vulnerable packages (direct and transitive)
+        if: always()
+        run: dotnet list RaceDay-part2.csproj package --vulnerable --include-transitive
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/**/*.trx

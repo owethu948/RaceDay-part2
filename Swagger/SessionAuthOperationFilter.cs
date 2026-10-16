@@ -30,6 +30,7 @@ public class SessionAuthOperationFilter : IOperationFilter
                 ? "**Access:** Any logged-in user (Organiser or Participant). Log in first via `POST /api/auth/login`."
                 : $"**Access:** {roles} only. Log in first via `POST /api/auth/login`.";
 
+            operation.Responses ??= new OpenApiResponses();
             operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Not logged in (no valid session)." });
             operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Logged in, but your role or ownership does not permit this action." });
         }
