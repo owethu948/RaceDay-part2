@@ -10,7 +10,8 @@ server-side session authentication with two roles, Swagger documentation, unit t
 | | |
 |---|---|
 | **YouTube demo (unlisted)** | `PASTE-YOUR-UNLISTED-YOUTUBE-LINK-HERE` |
-| **CI status** | see the screenshot below |
+| **CI status** <img width="1332" height="460" alt="image" src="https://github.com/user-attachments/assets/568b3143-dfb6-466b-a30c-941d1e49a242" />
+
 
 ---
 
@@ -166,7 +167,9 @@ builds in Release, runs all tests, lists vulnerable NuGet packages and uploads t
 
 ![Successful green build](docs/ci-green-build.png)
 
-> **Add your screenshot:** after the first green run, open the *Actions* tab, screenshot the green run and save it as
+
+<img width="1332" height="460" alt="image" src="https://github.com/user-attachments/assets/1c4c7dbc-2689-428e-b9cf-fd5fe1ab3afa" />
+
 > `docs/ci-green-build.png`.
 
 ---
